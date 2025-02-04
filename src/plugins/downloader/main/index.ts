@@ -67,7 +67,7 @@ let visitorData: string | undefined;
 
 const isYouTubePremium = () =>
   win.webContents.executeJavaScript(
-    '!document.querySelector(\'#endpoint[href="/music_premium"]\')',
+    '!!document.querySelector(\'#endpoint[href="/music_premium"]\')',
   ) as Promise<boolean>;
 
 const sendError = (error: Error, source?: string) => {
