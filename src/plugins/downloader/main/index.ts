@@ -32,7 +32,6 @@ import registerCallback, {
   type SongInfo,
   SongInfoEvent,
 } from '@/providers/song-info';
-import { getNetFetchAsFetch } from '@/plugins/utils/main';
 
 import { t } from '@/i18n';
 
@@ -117,22 +116,15 @@ export const onMainLoad = async ({
   // Caveat: `yt` is not set instantaneously, but race conditions are not a concern.
   ipc.on(
     'get-po-token',
-    async ({
-      poToken: _poToken,
-      visitorData: _visitorData,
-    }: {
-      poToken: string;
-      visitorData: string;
-    }) => {
-      poToken = _poToken;
-      visitorData = _visitorData;
+    async (data: { poToken: string; visitorData: string }) => {
+      poToken = data.poToken;
+      visitorData = data.visitorData;
 
       yt = await Innertube.create({
         po_token: poToken,
         visitor_data: visitorData,
         cache: new UniversalCache(false),
         generate_session_locally: true,
-        fetch: getNetFetchAsFetch(),
       });
 
       downloadSongOnFinishSetup({ ipc, getConfig });
@@ -796,7 +788,6 @@ const getAndroidTvInfo = async (id: string): Promise<VideoInfo> => {
     client_type: ClientType.TV_EMBEDDED,
     generate_session_locally: true,
     retrieve_player: true,
-    fetch: getNetFetchAsFetch(),
     po_token: poToken,
     visitor_data: visitorData,
   });
